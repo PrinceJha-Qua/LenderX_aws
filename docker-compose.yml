@@ -1,0 +1,51 @@
+# ============================================================
+# LenderX Docker Compose
+# Local development with DynamoDB Local for testing
+# ============================================================
+services:
+
+  # ── DynamoDB Local (for testing without AWS) ──
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: lenderx-dynamodb
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
+    volumes:
+      - dynamodb-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/shell/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ── LenderX Dev Environment ──
+  app:
+    build:
+      context: .
+      target: dev
+    container_name: lenderx-dev
+    volumes:
+      - .:/app
+      - /app/node_modules              # Don't override node_modules
+      - /app/infra/node_modules
+      - /app/backend/node_modules
+      - /app/frontend-lender/node_modules
+      - /app/frontend-borrower/node_modules
+      - ~/.aws:/root/.aws:ro           # Mount AWS credentials (read-only)
+    ports:
+      - "5173:5173"   # Lender frontend dev server
+      - "5174:5174"   # Borrower frontend dev server
+      - "3000:3000"   # Local API server (if needed)
+    environment:
+      - AWS_REGION=${AWS_REGION:-ap-south-1}
+      - STAGE=${STAGE:-dev}
+      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+    depends_on:
+      dynamodb-local:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes:
+  dynamodb-data:

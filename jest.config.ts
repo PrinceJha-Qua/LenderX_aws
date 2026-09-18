@@ -28,7 +28,7 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'text-summary', 'lcov', 'json-summary'],
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       branches: 70,
       functions: 75,
@@ -50,7 +50,7 @@ const config: Config = {
   maxWorkers: '50%',
 
   // Setup
-  setupFilesAfterSetup: [],
+  setupFilesAfterEnv: [],
 
   // Timeout — AI pipeline tests may take longer
   testTimeout: 30000,

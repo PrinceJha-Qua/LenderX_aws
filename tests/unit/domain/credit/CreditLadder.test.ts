@@ -1,4 +1,7 @@
-import { calculateNewLevel, getCreditLimit, MIN_CREDIT_LEVEL, MAX_CREDIT_LEVEL } from '../../../../backend/src/domain/credit/CreditLadder';
+import {
+  calculateNewLevel,
+  getCreditLimit,
+} from '../../../../backend/src/domain/credit/CreditLadder';
 
 describe('CreditLadder', () => {
   describe('calculateNewLevel', () => {

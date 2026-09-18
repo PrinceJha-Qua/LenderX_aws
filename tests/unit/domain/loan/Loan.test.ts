@@ -1,6 +1,9 @@
 import { Loan } from '../../../../backend/src/domain/loan/Loan';
 import { LoanStatus } from '../../../../backend/src/domain/loan/LoanStatus';
-import { InvariantViolationError, IllegalStateTransitionError } from '../../../../backend/src/shared/errors';
+import {
+  InvariantViolationError,
+  IllegalStateTransitionError,
+} from '../../../../backend/src/shared/errors';
 import { Money } from '../../../../backend/src/shared/Money';
 
 describe('Loan Entity', () => {
@@ -21,7 +24,7 @@ describe('Loan Entity', () => {
     // Approve loan (limit is $150)
     loan.approve(85, Money.fromDollars(150));
     expect(loan.status).toBe(LoanStatus.APPROVED);
-    
+
     // Check interest (100 * 0.15 = 15 -> total 115)
     expect(loan.remainingBalance).toBe(Money.fromDollars(115));
 
@@ -52,7 +55,7 @@ describe('Loan Entity', () => {
     });
 
     loan.startUnderwriting();
-    
+
     // limit is only $150
     expect(() => loan.approve(85, Money.fromDollars(150))).toThrow(InvariantViolationError);
   });

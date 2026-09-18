@@ -1,4 +1,7 @@
-import { ScoringEngine, APPROVAL_THRESHOLD } from '../../../../backend/src/domain/underwriting/ScoringEngine';
+import {
+  ScoringEngine,
+  APPROVAL_THRESHOLD,
+} from '../../../../backend/src/domain/underwriting/ScoringEngine';
 import { UnderwritingFailureError } from '../../../../backend/src/shared/errors';
 
 describe('ScoringEngine', () => {
@@ -9,10 +12,10 @@ describe('ScoringEngine', () => {
       transactionCount: 600, // Maxes out
       previousLoans: 12, // Maxes out
       previousDefaults: 0, // Perfect
-      debtToIncome: 0.10, // Excellent
+      debtToIncome: 0.1, // Excellent
       cashFlowScore: 95, // Excellent
     });
-    
+
     expect(score).toBeGreaterThan(90);
     expect(score).toBeGreaterThanOrEqual(APPROVAL_THRESHOLD);
   });
@@ -24,10 +27,10 @@ describe('ScoringEngine', () => {
       transactionCount: 500,
       previousLoans: 5,
       previousDefaults: 2, // 2 defaults wipes out the 0.20 weight entirely
-      debtToIncome: 0.20,
+      debtToIncome: 0.2,
       cashFlowScore: 80,
     });
-    
+
     // They lose 20 points off the top, plus some fractional points elsewhere
     expect(score).toBeLessThan(80);
   });

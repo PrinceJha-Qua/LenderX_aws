@@ -15,12 +15,12 @@ export const CreditLimits: Record<number, Cents> = {
 };
 
 export const UnlockThresholds: Record<number, number> = {
-  2: 1, 
-  3: 2, 
-  4: 3, 
-  5: 5, 
-  6: 8, 
-  7: 12
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 5,
+  6: 8,
+  7: 12,
 };
 
 export function getCreditLimit(level: number): Cents {
@@ -28,17 +28,24 @@ export function getCreditLimit(level: number): Cents {
   return CreditLimits[l];
 }
 
-export function calculateNewLevel(currentLevel: number, totalSuccessfulRepayments: number, hasDefaulted: boolean): number {
+export function calculateNewLevel(
+  currentLevel: number,
+  totalSuccessfulRepayments: number,
+  hasDefaulted: boolean,
+): number {
   if (hasDefaulted) {
     // Drop 2 levels on default
     return Math.max(currentLevel - 2, MIN_CREDIT_LEVEL);
   }
-  
+
   let nextLevel = currentLevel;
   // Can jump multiple levels if they somehow accumulated many successful repayments
-  while (nextLevel < MAX_CREDIT_LEVEL && totalSuccessfulRepayments >= UnlockThresholds[nextLevel + 1]) {
+  while (
+    nextLevel < MAX_CREDIT_LEVEL &&
+    totalSuccessfulRepayments >= UnlockThresholds[nextLevel + 1]
+  ) {
     nextLevel++;
   }
-  
+
   return nextLevel;
 }

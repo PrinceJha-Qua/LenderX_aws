@@ -2,6 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
@@ -60,8 +62,8 @@ export class LenderXStack extends cdk.Stack {
         };
       `),
       environment: {
-        TABLE_NAME: this.singleTable.tableName
-      }
+        TABLE_NAME: this.singleTable.tableName,
+      },
     });
     this.singleTable.grantReadWriteData(checkDefaultLambda);
 
@@ -82,9 +84,59 @@ export class LenderXStack extends cdk.Stack {
       timeout: cdk.Duration.days(365),
     });
 
+    // 5. API Gateway Lambdas
+    const lambdaProps: lambdaNodejs.NodejsFunctionProps = {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      entry: '../backend/src/handlers/index.ts',
+      environment: { TABLE_NAME: this.singleTable.tableName },
+      bundling: { minify: true, sourceMap: true },
+    };
+
+    const createLoanLambda = new lambdaNodejs.NodejsFunction(this, 'CreateLoanLambda', {
+      ...lambdaProps,
+      handler: 'createLoan',
+    });
+    const fundLoanLambda = new lambdaNodejs.NodejsFunction(this, 'FundLoanLambda', {
+      ...lambdaProps,
+      handler: 'fundLoan',
+    });
+    const repayLoanLambda = new lambdaNodejs.NodejsFunction(this, 'RepayLoanLambda', {
+      ...lambdaProps,
+      handler: 'repayLoan',
+    });
+
+    // Grant DB Permissions
+    this.singleTable.grantReadWriteData(createLoanLambda);
+    this.singleTable.grantReadWriteData(fundLoanLambda);
+    this.singleTable.grantReadWriteData(repayLoanLambda);
+
+    // 6. API Gateway Configuration
+    const api = new apigateway.RestApi(this, 'LenderXApi', {
+      restApiName: 'LenderX Service',
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS, // For hackathon
+        allowMethods: apigateway.Cors.ALL_METHODS,
+        allowHeaders: ['Content-Type', 'x-borrower-id'],
+      },
+    });
+
+    const loansResource = api.root.addResource('loans');
+
+    // POST /loans -> Create Loan
+    loansResource.addMethod('POST', new apigateway.LambdaIntegration(createLoanLambda));
+
+    // POST /loans/fund -> Fund Loan
+    const fundResource = loansResource.addResource('fund');
+    fundResource.addMethod('POST', new apigateway.LambdaIntegration(fundLoanLambda));
+
+    // POST /loans/repay -> Repay Loan
+    const repayResource = loansResource.addResource('repay');
+    repayResource.addMethod('POST', new apigateway.LambdaIntegration(repayLoanLambda));
+
     // CDK Outputs
     new cdk.CfnOutput(this, 'TableName', { value: this.singleTable.tableName });
     new cdk.CfnOutput(this, 'DocumentBucketName', { value: this.documentBucket.bucketName });
     new cdk.CfnOutput(this, 'StateMachineArn', { value: lifecycleStateMachine.stateMachineArn });
+    new cdk.CfnOutput(this, 'ApiEndpoint', { value: api.url });
   }
 }

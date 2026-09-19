@@ -1,6 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
 export class LenderXStack extends cdk.Stack {
@@ -47,8 +50,41 @@ export class LenderXStack extends cdk.Stack {
       ],
     });
 
+    // 3. Lifecycle Lambda (Checks for Default)
+    const checkDefaultLambda = new lambda.Function(this, 'CheckDefaultLambda', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'index.handler', // We will bundle this later
+      code: lambda.Code.fromInline(`
+        exports.handler = async (event) => { 
+          console.log("Mock handler for CheckDefault", event); 
+        };
+      `),
+      environment: {
+        TABLE_NAME: this.singleTable.tableName
+      }
+    });
+    this.singleTable.grantReadWriteData(checkDefaultLambda);
+
+    // 4. Loan Lifecycle Step Function (Wait -> Check)
+    const waitState = new stepfunctions.Wait(this, 'WaitForTerm', {
+      time: stepfunctions.WaitTime.secondsPath('$.termDaysSeconds'), // We'll pass seconds for the hackathon instead of days to test it fast
+    });
+
+    const checkState = new tasks.LambdaInvoke(this, 'CheckLoanStatus', {
+      lambdaFunction: checkDefaultLambda,
+      payloadResponseOnly: true,
+    });
+
+    const definition = waitState.next(checkState);
+
+    const lifecycleStateMachine = new stepfunctions.StateMachine(this, 'LoanLifecycle', {
+      definitionBody: stepfunctions.DefinitionBody.fromChainable(definition),
+      timeout: cdk.Duration.days(365),
+    });
+
     // CDK Outputs
     new cdk.CfnOutput(this, 'TableName', { value: this.singleTable.tableName });
     new cdk.CfnOutput(this, 'DocumentBucketName', { value: this.documentBucket.bucketName });
+    new cdk.CfnOutput(this, 'StateMachineArn', { value: lifecycleStateMachine.stateMachineArn });
   }
 }

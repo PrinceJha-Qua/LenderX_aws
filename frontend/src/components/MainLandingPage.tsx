@@ -123,8 +123,8 @@ export default function MainLandingPage() {
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="users" aria-hidden="true" className="lucide lucide-users w-6 h-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
 </div>
 <div>
-<div className="text-3xl font-bold text-slate-900 tracking-tight">1,200+</div>
-<div className="text-sm text-slate-600 font-medium">Small businesses supported</div>
+<div className="text-3xl font-bold text-slate-900 tracking-[0.03em]">1,200+</div>
+<div className="text-sm text-slate-600 font-medium tracking-[0.01em]">Small businesses supported</div>
 </div>
 </div>
 {/*  Metric 2  */}
@@ -133,8 +133,8 @@ export default function MainLandingPage() {
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="globe-2" aria-hidden="true" className="lucide lucide-globe-2 w-6 h-6"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"></path><path d="M7 3.34V5a3 3 0 0 0 3 3a2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17"></path><path d="M11 21.95V18a2 2 0 0 0-2-2a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"></path><circle cx="12" cy="12" r="10"></circle></svg>
 </div>
 <div>
-<div className="text-3xl font-bold text-slate-900 tracking-tight">15+</div>
-<div className="text-sm text-slate-600 font-medium">Countries (and growing)</div>
+<div className="text-3xl font-bold text-slate-900 tracking-[0.03em]">15+</div>
+<div className="text-sm text-slate-600 font-medium tracking-[0.01em]">Countries (and growing)</div>
 </div>
 </div>
 {/*  Metric 3  */}
@@ -143,8 +143,8 @@ export default function MainLandingPage() {
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="bar-chart-3" aria-hidden="true" className="lucide lucide-bar-chart-3 w-6 h-6"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>
 </div>
 <div>
-<div className="text-3xl font-bold text-slate-900 tracking-tight">$12M+</div>
-<div className="text-sm text-slate-600 font-medium">Capital deployed</div>
+<div className="text-3xl font-bold text-slate-900 tracking-[0.03em]">$12M+</div>
+<div className="text-sm text-slate-600 font-medium tracking-[0.01em]">Capital deployed</div>
 </div>
 </div>
 {/*  Metric 4  */}
@@ -153,8 +153,8 @@ export default function MainLandingPage() {
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="sprout" aria-hidden="true" className="lucide lucide-sprout w-6 h-6"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"></path><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"></path><path d="M5 21h14"></path></svg>
 </div>
 <div>
-<div className="text-3xl font-bold text-slate-900 tracking-tight">92%</div>
-<div className="text-sm text-slate-600 font-medium">Repayment success rate</div>
+<div className="text-3xl font-bold text-slate-900 tracking-[0.03em]">92%</div>
+<div className="text-sm text-slate-600 font-medium tracking-[0.01em]">Repayment success rate</div>
 </div>
 </div>
 </div>
@@ -308,32 +308,32 @@ export default function MainLandingPage() {
 <div className="flex items-start gap-3">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="users-2" aria-hidden="true" className="lucide lucide-users-2 w-6 h-6 text-emerald-300 flex-shrink-0 mt-1"><path d="M18 21a8 8 0 0 0-16 0"></path><circle cx="10" cy="8" r="5"></circle><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"></path></svg>
 <div>
-<span className="text-xs text-emerald-200/80 font-medium block">Jobs created</span>
-<span className="text-2xl font-bold text-white tracking-tight">8,500+</span>
+<span className="text-xs text-emerald-200/80 font-medium block tracking-[0.01em]">Jobs created</span>
+<span className="text-2xl font-bold text-white tracking-[0.03em]">8,500+</span>
 </div>
 </div>
 {/*  Impact Stat 2  */}
 <div className="flex items-start gap-3">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="store" aria-hidden="true" className="lucide lucide-store w-6 h-6 text-emerald-300 flex-shrink-0 mt-1"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg>
 <div>
-<span className="text-xs text-emerald-200/80 font-medium block">Communities strengthened</span>
-<span className="text-2xl font-bold text-white tracking-tight">320+</span>
+<span className="text-xs text-emerald-200/80 font-medium block tracking-[0.01em]">Communities strengthened</span>
+<span className="text-2xl font-bold text-white tracking-[0.03em]">320+</span>
 </div>
 </div>
 {/*  Impact Stat 3  */}
 <div className="flex items-start gap-3">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="leaf" aria-hidden="true" className="lucide lucide-leaf w-6 h-6 text-emerald-300 flex-shrink-0 mt-1"><path d="M11 20a10 10 0 0010-10 25.9 25.9 0 00-1.04-7.281 1 1 0 00-1.755-.325C15.833 5.5 13 5.5 9.8 6.1A7 7 0 0011 20"></path><path d="M2 21a5 5 0 012.911-4.544C7.613 15.212 8.351 15.24 11 13"></path></svg>
 <div>
-<span className="text-xs text-emerald-200/80 font-medium block">Estimated CO₂ avoided</span>
-<span className="text-2xl font-bold text-white tracking-tight">12,000 tons</span>
+<span className="text-xs text-emerald-200/80 font-medium block tracking-[0.01em]">Estimated CO₂ avoided</span>
+<span className="text-2xl font-bold text-white tracking-[0.03em]">12,000 tons</span>
 </div>
 </div>
 {/*  Impact Stat 4  */}
 <div className="flex items-start gap-3">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" data-lucide="globe" aria-hidden="true" className="lucide lucide-globe w-6 h-6 text-emerald-300 flex-shrink-0 mt-1"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
 <div>
-<span className="text-xs text-emerald-200/80 font-medium block">Businesses in emerging markets</span>
-<span className="text-2xl font-bold text-white tracking-tight">1,200+</span>
+<span className="text-xs text-emerald-200/80 font-medium block tracking-[0.01em]">Businesses in emerging markets</span>
+<span className="text-2xl font-bold text-white tracking-[0.03em]">1,200+</span>
 </div>
 </div>
 </div>

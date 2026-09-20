@@ -11,6 +11,12 @@
   --font-serif-hero: "Instrument Serif", "Playfair Display", Georgia, serif;
   --font-editorial: "Instrument Serif", Georgia, serif;
   --font-script: "Caveat", cursive, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  letter-spacing: 0.012em;
 }
 
 /* Custom theme components and utility classes */
@@ -33,12 +39,21 @@
 
 .font-serif-hero {
   font-family: var(--font-serif-hero);
+  letter-spacing: 0.03em;
 }
 
 .font-editorial {
   font-family: var(--font-editorial);
+  letter-spacing: 0.035em;
+}
+
+.font-editorial-italic {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  letter-spacing: 0.035em;
 }
 
 .font-script {
   font-family: var(--font-script);
+  letter-spacing: 0.02em;
 }

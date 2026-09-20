@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-forest: #047857;
+  --color-brand-dark: #0f172a;
+  --color-brand-accent: #059669;
+  --color-brand-charcoal: #1e293b;
+  --color-brand-muted: #64748b;
+  --color-brand-border: #e2e8f0;
+
+  --font-serif-hero: "Instrument Serif", "Playfair Display", Georgia, serif;
+  --font-editorial: "Instrument Serif", Georgia, serif;
+  --font-script: "Caveat", cursive, sans-serif;
+}
+
+/* Custom theme components and utility classes */
+.impact-bg {
+  background: linear-gradient(135deg, #043828 0%, #064e3b 50%, #02261c 100%);
+}
+
+.chalk-board {
+  background: rgba(15, 23, 20, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+}
+
+.canvas-banner {
+  background: #fdfbf7;
+  border: 1px solid #e7e2d7;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.font-serif-hero {
+  font-family: var(--font-serif-hero);
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}

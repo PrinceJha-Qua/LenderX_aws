@@ -73,8 +73,8 @@ export default function LoanApplicationWizard() {
 
         <div className="mb-10">
           <img src="/logo-white.png" alt="LenderX" className="h-8 w-auto object-contain mb-6" />
-          <h1 className="font-editorial text-4xl lg:text-5xl font-bold tracking-tight text-white mb-3">AI Credit Underwriting</h1>
-          <p className="text-emerald-100/90 text-sm lg:text-base leading-relaxed font-light">
+          <h1 className="font-editorial text-4xl lg:text-5xl font-bold tracking-[0.035em] text-white mb-3">AI Credit Underwriting</h1>
+          <p className="text-emerald-100/90 text-sm lg:text-base leading-relaxed font-light tracking-[0.015em]">
             Upload your unbanked ledger data (M-Pesa, supplier receipts, inventory logs). Our AWS-powered LLM agent will deterministically underwrite your risk in seconds, entirely bypassing traditional FICO scores.
           </p>
         </div>

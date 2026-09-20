@@ -64,20 +64,11 @@ export default function LenderDashboard() {
 <aside className="w-64 bg-[#091712] text-[#f2f8f5] flex-shrink-0 flex flex-col justify-between p-6 border-r border-[#142921] hidden xl:flex my-3 ml-3 rounded-2xl shadow-xl sticky top-12 h-[calc(100vh-4rem)]">
 <div>
 {/*  Brand Signature  */}
-<div className="flex items-center gap-3 pb-6 border-b border-[#163327]">
-<div className="w-10 h-10 rounded-xl bg-[#10b981] flex items-center justify-center text-[#091712] font-bold shadow-inner">
-<svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="5"></circle>
-<path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-6.5l-2.1 2.1m-8.8 8.8l-2.1 2.1m0-13l2.1 2.1m8.8 8.8l2.1 2.1" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5"></path>
-</svg>
-</div>
-<div>
-<div className="flex items-center gap-1.5">
-<span className="font-headline font-bold text-xl tracking-tight text-white">LenderX</span>
-<span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 bg-[#059669] text-white rounded">Sol</span>
-</div>
-<p className="text-[11px] text-[#a7f3d0]/80 font-garamond italic">Solar-Capital Commons</p>
-</div>
+<div className="flex items-center justify-between pb-6 border-b border-[#163327]">
+  <div className="flex items-center gap-2">
+    <img src="/logo-white.png" alt="LenderX" className="h-7 w-auto object-contain" />
+    <span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 bg-[#059669] text-white rounded">Sol</span>
+  </div>
 </div>
 {/*  Navigation Links  */}
 

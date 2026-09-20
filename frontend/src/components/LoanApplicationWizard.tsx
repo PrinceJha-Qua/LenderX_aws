@@ -66,14 +66,15 @@ export default function LoanApplicationWizard() {
       {/* Left Panel: Form UI */}
       <div className="w-full lg:w-1/2 flex flex-col p-8 lg:p-16 overflow-y-auto border-r border-[#142921]">
         
-        <button onClick={() => navigate('/borrower')} className="text-[#a7f3d0]/60 hover:text-white transition flex items-center gap-2 mb-12 w-fit">
+        <button onClick={() => navigate('/borrower')} className="text-emerald-300 hover:text-white transition flex items-center gap-2 mb-12 w-fit font-medium">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Return to Dashboard
         </button>
 
         <div className="mb-10">
+          <img src="/logo-white.png" alt="LenderX" className="h-8 w-auto object-contain mb-6" />
           <h1 className="font-editorial text-4xl lg:text-5xl font-bold tracking-tight text-white mb-3">AI Credit Underwriting</h1>
-          <p className="text-[#a7f3d0]/70 text-sm lg:text-base leading-relaxed">
+          <p className="text-emerald-100/90 text-sm lg:text-base leading-relaxed font-light">
             Upload your unbanked ledger data (M-Pesa, supplier receipts, inventory logs). Our AWS-powered LLM agent will deterministically underwrite your risk in seconds, entirely bypassing traditional FICO scores.
           </p>
         </div>
@@ -109,7 +110,7 @@ export default function LoanApplicationWizard() {
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                   </div>
                   <span className="text-xl font-bold text-white mb-2">{file ? file.name : "Drop Ledger & Mobile Receipts"}</span>
-                  <span className="text-sm text-[#a7f3d0]/60">Supports PDF, CSV, and JPG extracts from M-Pesa.</span>
+                  <span className="text-sm text-emerald-200/90 font-medium">Supports PDF, CSV, and JPG extracts from M-Pesa.</span>
                 </label>
               </div>
               <button onClick={() => setStep(3)} disabled={!file} className="w-full bg-[#059669] hover:bg-[#047857] disabled:opacity-50 disabled:bg-[#163327] disabled:text-white/30 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-[#059669]/20 flex items-center justify-center gap-2">
@@ -128,7 +129,7 @@ export default function LoanApplicationWizard() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h3 className="text-2xl font-editorial font-bold text-white mb-1">Loan Authorized</h3>
-                    <p className="text-sm text-[#34d399]">Live on Global Marketplace</p>
+                    <p className="text-sm text-[#34d399] font-medium">Live on Global Marketplace</p>
                   </div>
                   <div className="w-16 h-16 bg-[#064e3b] border border-[#10b981] rounded-full flex items-center justify-center shadow-inner">
                     <svg className="w-8 h-8 text-[#34d399]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
@@ -137,11 +138,11 @@ export default function LoanApplicationWizard() {
 
                 <div className="grid grid-cols-2 gap-4 mb-8">
                   <div className="bg-[#06120e] p-4 rounded-xl border border-[#163327]">
-                    <span className="text-[10px] uppercase font-bold text-[#a7f3d0]/60 tracking-wider">Approved Capital</span>
+                    <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">Approved Capital</span>
                     <p className="text-2xl font-mono text-white mt-1">${amount}</p>
                   </div>
                   <div className="bg-[#06120e] p-4 rounded-xl border border-[#163327]">
-                    <span className="text-[10px] uppercase font-bold text-[#a7f3d0]/60 tracking-wider">Interest Rate</span>
+                    <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">Interest Rate</span>
                     <p className="text-2xl font-mono text-white mt-1">15.0%</p>
                   </div>
                 </div>
@@ -150,7 +151,7 @@ export default function LoanApplicationWizard() {
                   <span className="text-sm font-bold text-white">LenderX Risk Score</span>
                   <div className="flex items-center gap-3">
                     <div className="text-3xl font-editorial font-bold text-[#34d399]">{score}</div>
-                    <div className="text-xs text-[#a7f3d0]/60">/ 100 <br/>(Tier 1)</div>
+                    <div className="text-xs text-emerald-200/90 font-medium">/ 100 <br/>(Tier 1)</div>
                   </div>
                 </div>
               </div>

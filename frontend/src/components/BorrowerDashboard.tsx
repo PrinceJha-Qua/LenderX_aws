@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createLoan, repayLoan } from '../services/api';
 
 export default function BorrowerDashboard() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'Overview';
+  const setActiveTab = (tab: string) => setSearchParams({ tab });
   const [amount, setAmount] = useState('250');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const [activeTab, setActiveTab] = useState('Overview');
   const [activeBalance, setActiveBalance] = useState(120);
   const [isRepaying, setIsRepaying] = useState(false);
 
@@ -43,85 +45,8 @@ export default function BorrowerDashboard() {
   };
   return (
     <div className="w-full min-h-screen font-sans bg-slate-50">
-      
-{/*  BEGIN: MainHeaderNavigation  */}
-<header className="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm" data-purpose="portal-navigation">
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-{/*  Brand Logo & Tagline  */}
-<div className="flex items-center space-x-3.5">
-<div className="w-10 h-10 rounded-xl bg-[#0c3b2e] flex items-center justify-center shadow-md">
-{/*  Stylized knot / growth mark  */}
-<svg className="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24">
-<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-</svg>
-</div>
-<div>
-<div className="flex items-center gap-2">
-<span className="text-xl font-bold tracking-tight text-slate-900 leading-none block font-editorial">LenderX</span>
-<span className="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-emerald-50 text-[#0c3b2e] border border-emerald-200/60">Enterprise</span>
-</div>
-<span className="text-[11px] text-slate-400 font-medium tracking-wide">Fueling local commerce across emerging markets</span>
-</div>
-</div>
-{/*  Navigation Links  */}
-<nav className="hidden md:flex items-center space-x-2">
-<button onClick={() => setActiveTab("Overview")} className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-[#0c3b2e] bg-[#e8f3ee] rounded-full transition-colors">
-<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round"></path>
-<polyline points="9 22 9 12 15 12 15 22"></polyline>
-</svg>
-<span>Overview</span>
-</button>
-<button onClick={() => setActiveTab("Facilities")} className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors">
-<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<rect height="14" rx="2" width="20" x="2" y="5"></rect>
-<line x1="2" x2="22" y1="10" y2="10"></line>
-</svg>
-<span>Facilities</span>
-</button>
-<button onClick={() => setActiveTab("Documents")} className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors">
-<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"></path>
-<polyline points="14 2 14 8 20 8"></polyline>
-<line x1="16" x2="8" y1="13" y2="13"></line>
-<line x1="16" x2="8" y1="17" y2="17"></line>
-<polyline points="10 9 9 9 8 9"></polyline>
-</svg>
-<span>Documents</span>
-</button>
-<button onClick={() => setActiveTab("Network")} className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors">
-<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" strokeLinecap="round" strokeLinejoin="round"></path>
-</svg>
-<span>Network</span>
-</button>
-<button onClick={() => setActiveTab("Support")} className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-50 transition-colors">
-<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10"></circle>
-<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" strokeLinecap="round" strokeLinejoin="round"></path>
-<line x1="12" x2="12.01" y1="17" y2="17"></line>
-</svg>
-<span>Support</span>
-</button>
-</nav>
-{/*  User Profile Badge & Dropdown Trigger  */}
-<div className="flex items-center space-x-3 cursor-pointer">
-<div className="w-10 h-10 rounded-full bg-[#0c3b2e] text-emerald-200 ring-2 ring-emerald-100 flex items-center justify-center font-bold text-xs tracking-wider shadow-sm">
-          AM
-        </div>
-<div className="hidden sm:flex flex-col text-left">
-<span className="text-sm font-semibold text-slate-900 leading-tight">Amina M.</span>
-<span className="text-[11px] text-emerald-700 font-medium">Enterprise Member</span>
-</div>
-<svg className="w-4 h-4 text-slate-400 ml-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-<path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round"></path>
-</svg>
-</div>
-</div>
-</header>
-{/*  END: MainHeaderNavigation  */}
-{/*  BEGIN: MainContentArea  */}
-<main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-topo-hills">
+      {/*  BEGIN: MainContentArea  */}
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-topo-hills">
 {activeTab === 'Overview' && (
 <div className="space-y-8">
 {/*  BEGIN: Editorial Header & Borrower Banner  */}
@@ -179,7 +104,7 @@ export default function BorrowerDashboard() {
 </svg>
 </div>
 <div>
-<p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Credit Level</p>
+<p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Credit Level</p>
 <div className="text-3xl font-extrabold text-slate-900 mt-1 font-editorial">Tier 3</div>
 <div className="mt-1 flex items-center text-xs font-semibold text-emerald-700">
 <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -198,7 +123,7 @@ export default function BorrowerDashboard() {
 </svg>
 </div>
 <div>
-<p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Available Limit</p>
+<p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Available Limit</p>
 <div className="text-3xl font-extrabold text-slate-900 mt-1 font-editorial">$350.00</div>
 <div className="mt-1 flex items-center text-xs font-semibold text-emerald-700">
 <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -217,7 +142,7 @@ export default function BorrowerDashboard() {
 </svg>
 </div>
 <div>
-<p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Balance</p>
+<p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Active Balance</p>
 <div className="text-3xl font-extrabold text-slate-900 mt-1 font-editorial">$120.00</div>
 <div className="mt-1 flex items-center text-xs font-semibold text-rose-600">
 <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -236,7 +161,7 @@ export default function BorrowerDashboard() {
 </svg>
 </div>
 <div>
-<p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Lifetime Facilitated</p>
+<p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Lifetime Facilitated</p>
 <div className="text-3xl font-extrabold text-slate-900 mt-1 font-editorial">$325.00</div>
 <div className="mt-1 flex items-center text-xs font-semibold text-emerald-700">
 <span>100% on-time repayment</span>
@@ -267,7 +192,7 @@ export default function BorrowerDashboard() {
 <div className="overflow-x-auto">
 <table className="w-full text-left border-collapse">
 <thead>
-<tr className="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+<tr className="border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wider">
 <th className="pb-3.5 pl-2" scope="col">Date</th>
 <th className="pb-3.5 px-4" scope="col">Amount</th>
 <th className="pb-3.5 px-4" scope="col">Purpose</th>
@@ -483,7 +408,12 @@ export default function BorrowerDashboard() {
 </button>
 <p className="text-center text-[11px] text-emerald-200/70 mt-3 mb-2">Fixed rate. No hidden fees. Instant decision.</p>
 <Link to="/wizard" className="w-full inline-flex items-center justify-center space-x-2 bg-emerald-900 text-emerald-300 hover:bg-emerald-800 px-5 py-3.5 rounded-xl font-bold text-sm transition-all shadow-md mt-2">
-  <span>✨ Apply via AI Underwriting</span>
+  <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <rect width="16" height="16" x="4" y="4" rx="2"></rect>
+    <rect width="6" height="6" x="9" y="9" rx="1"></rect>
+    <path d="M15 2v2m0 16v2M2 15h2m0-6h2M20 15h2m0-6h2M9 2v2m0 16v2"></path>
+  </svg>
+  <span>Instant AI Underwriting</span>
 </Link>
 
 </div>
@@ -505,7 +435,7 @@ export default function BorrowerDashboard() {
 <span className="text-xs font-bold text-slate-900">Level 1: Seed Micro</span>
 <span className="text-[11px] text-emerald-700 font-semibold">$50 Limit</span>
 </div>
-<p className="text-[11px] text-slate-400">Completed December 2023</p>
+<p className="text-[11px] text-slate-500 font-medium">Completed December 2023</p>
 </div>
 </div>
 {/*  Ladder Step 2: Completed  */}
@@ -518,7 +448,7 @@ export default function BorrowerDashboard() {
 <span className="text-xs font-bold text-slate-900">Level 2: Artisan Growth</span>
 <span className="text-[11px] text-emerald-700 font-semibold">$150 Limit</span>
 </div>
-<p className="text-[11px] text-slate-400">Completed April 2024</p>
+<p className="text-[11px] text-slate-500 font-medium">Completed April 2024</p>
 </div>
 </div>
 {/*  Ladder Step 3: Current Active Tier  */}
@@ -544,7 +474,7 @@ export default function BorrowerDashboard() {
 <span className="text-xs font-bold text-slate-700">Level 4: Commercial Expansion</span>
 <span className="text-[11px] text-slate-500 font-semibold">$750 Limit</span>
 </div>
-<p className="text-[11px] text-slate-400">Repay current $120 balance to unlock</p>
+<p className="text-[11px] text-slate-500 font-medium">Repay current $120 balance to unlock</p>
 </div>
 </div>
 {/*  Ladder Step 5: Master Tier  */}
@@ -557,7 +487,7 @@ export default function BorrowerDashboard() {
 <span className="text-xs font-bold text-slate-700">Level 5: Sovereign Merchant</span>
 <span className="text-[11px] text-slate-500 font-semibold">$1,500+</span>
 </div>
-<p className="text-[11px] text-slate-400">Priority syndicate banking lines</p>
+<p className="text-[11px] text-slate-500 font-medium">Priority syndicate banking lines</p>
 </div>
 </div>
 </div>

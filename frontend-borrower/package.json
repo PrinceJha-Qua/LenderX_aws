@@ -1,1 +1,0 @@
-{"name": "@lenderx/frontend-borrower", "version": "0.1.0", "private": true, "scripts": {"dev": "vite --port 5174", "build": "vite build", "test": "vitest"}}

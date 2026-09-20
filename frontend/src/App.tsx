@@ -4,6 +4,7 @@ import BorrowerDashboard from './components/BorrowerDashboard';
 import LenderDashboard from './components/LenderDashboard';
 import MainLandingPage from './components/MainLandingPage';
 import LoanApplicationWizard from './components/LoanApplicationWizard';
+import Manifesto from './components/Manifesto';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/borrower" element={<BorrowerDashboard />} />
           <Route path="/lender" element={<LenderDashboard />} />
           <Route path="/wizard" element={<LoanApplicationWizard />} />
+              <Route path="/manifesto" element={<Manifesto />} />
         </Routes>
       </div>
     </BrowserRouter>

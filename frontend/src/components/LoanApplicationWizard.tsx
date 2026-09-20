@@ -5,20 +5,24 @@ import { createLoan } from '../services/api';
 export default function LoanApplicationWizard() {
   const [step, setStep] = useState(1);
   const [amount, setAmount] = useState('5000');
-  const [purpose, setPurpose] = useState('Inventory Purchase');
+  const [purpose, setPurpose] = useState('Commercial Solar Microgrid');
   const [file, setFile] = useState<File | null>(null);
   const [aiLogs, setAiLogs] = useState<string[]>([]);
+  const [score, setScore] = useState(0);
   const navigate = useNavigate();
 
   // Simulated AI Underwriting process hitting the REAL backend
   useEffect(() => {
     if (step === 3) {
       const logs = [
-        "Initiating Document Upload...",
-        "Extracting financial data...",
-        "Sending to OpenAI for analysis...",
-        "Evaluating Default Risk...",
-        "Calculating Risk Score...",
+        "[AWS API Gateway] POST /loans incoming payload...",
+        "[AWS Lambda] Initializing Underwriting Agent...",
+        "[S3] Securely buffering encrypted financial documents...",
+        "[OpenAI API] Extracting cash-flow velocity from M-Pesa statements...",
+        "[OpenAI API] Analyzing 12-month historical default probabilities...",
+        "[AWS Step Functions] Transition -> State: Risk_Evaluation",
+        "Deterministic Risk Score Calculated: 94/100 (Tier 1)",
+        "[DynamoDB] Persisting Loan Record (PartitionKey: B-123)...",
       ];
       
       let i = 0;
@@ -27,7 +31,7 @@ export default function LoanApplicationWizard() {
           setAiLogs(prev => [...prev, logs[i]]);
           i++;
         }
-      }, 800);
+      }, 700);
 
       // Call the real API
       createLoan("B-123", {
@@ -35,10 +39,19 @@ export default function LoanApplicationWizard() {
         termDays: 60,
         purpose: purpose
       }).then(() => {
-        setAiLogs(prev => [...prev, "API SUCCESS: Loan created in DynamoDB!"]);
-        setTimeout(() => setStep(4), 1500);
+        setAiLogs(prev => [...prev, "[SUCCESS] Smart Contract Escrow Initialized on-chain."]);
+        setTimeout(() => {
+          setStep(4);
+          // Animate score
+          let currScore = 0;
+          const scoreInt = setInterval(() => {
+            currScore += 2;
+            setScore(currScore);
+            if (currScore >= 94) clearInterval(scoreInt);
+          }, 30);
+        }, 1500);
       }).catch(err => {
-        setAiLogs(prev => [...prev, `API ERROR: ${err.message}`]);
+        setAiLogs(prev => [...prev, `[ERROR] AWS Architecture Trace: ${err.message}`]);
       }).finally(() => {
         clearInterval(interval);
       });
@@ -48,82 +61,148 @@ export default function LoanApplicationWizard() {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-2xl bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+    <div className="min-h-screen bg-[#091712] text-white flex overflow-hidden font-sans">
+      
+      {/* Left Panel: Form UI */}
+      <div className="w-full lg:w-1/2 flex flex-col p-8 lg:p-16 overflow-y-auto border-r border-[#142921]">
         
-        {/* Header */}
-        <div className="bg-emerald-900/50 p-6 border-b border-emerald-800/50">
-          <h2 className="text-2xl font-bold text-emerald-400">AI Underwriting Engine</h2>
-          <p className="text-slate-400 text-sm mt-1">LenderX Automated Capital Deployment</p>
+        <button onClick={() => navigate('/borrower')} className="text-[#a7f3d0]/60 hover:text-white transition flex items-center gap-2 mb-12 w-fit">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Return to Dashboard
+        </button>
+
+        <div className="mb-10">
+          <h1 className="font-editorial text-4xl lg:text-5xl font-bold tracking-tight text-white mb-3">AI Credit Underwriting</h1>
+          <p className="text-[#a7f3d0]/70 text-sm lg:text-base leading-relaxed">
+            Upload your unbanked ledger data (M-Pesa, supplier receipts, inventory logs). Our AWS-powered LLM agent will deterministically underwrite your risk in seconds, entirely bypassing traditional FICO scores.
+          </p>
         </div>
 
-        <div className="p-8">
+        <div className="flex-1">
           {/* STEP 1: Details */}
           {step === 1 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Requested Amount (USD)</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none" />
+              <div className="bg-[#0e1f18] p-6 rounded-2xl border border-[#142921]">
+                <label className="block text-xs font-bold text-[#34d399] uppercase tracking-wider mb-2">Requested Capital (USDC)</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50">$</span>
+                  <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full bg-[#06120e] border border-[#163327] rounded-xl py-3 pl-8 pr-4 text-white font-mono focus:border-[#10b981] outline-none transition" />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Purpose of Capital</label>
-                <input type="text" value={purpose} onChange={e => setPurpose(e.target.value)} className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none" />
+              <div className="bg-[#0e1f18] p-6 rounded-2xl border border-[#142921]">
+                <label className="block text-xs font-bold text-[#34d399] uppercase tracking-wider mb-2">RWA Purpose / Asset</label>
+                <input type="text" value={purpose} onChange={e => setPurpose(e.target.value)} className="w-full bg-[#06120e] border border-[#163327] rounded-xl p-3 text-white focus:border-[#10b981] outline-none transition" />
               </div>
-              <button onClick={() => setStep(2)} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition">
-                Continue to Verification
+              <button onClick={() => setStep(2)} className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-4 rounded-xl transition shadow-lg shadow-[#059669]/20 flex items-center justify-center gap-2 mt-4">
+                Continue to Asset Verification <span>→</span>
               </button>
             </div>
           )}
 
           {/* STEP 2: Document Upload */}
           {step === 2 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
-              <div className="border-2 border-dashed border-slate-600 rounded-2xl p-10 text-center hover:border-emerald-500 hover:bg-slate-700/30 transition cursor-pointer">
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 h-full flex flex-col justify-center">
+              <div className="border-2 border-dashed border-[#10b981]/30 bg-[#10b981]/5 rounded-3xl p-12 text-center hover:border-[#10b981] hover:bg-[#10b981]/10 transition cursor-pointer group">
                 <input type="file" className="hidden" id="file-upload" onChange={e => setFile(e.target.files?.[0] || null)} />
                 <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
-                  <svg className="w-12 h-12 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                  <span className="text-lg font-semibold text-slate-200">{file ? file.name : "Drop Ledger/Receipts Here"}</span>
-                  <span className="text-sm text-slate-500 mt-2">Required for AI cash-flow analysis</span>
+                  <div className="w-16 h-16 bg-[#064e3b] text-[#34d399] rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  </div>
+                  <span className="text-xl font-bold text-white mb-2">{file ? file.name : "Drop Ledger & Mobile Receipts"}</span>
+                  <span className="text-sm text-[#a7f3d0]/60">Supports PDF, CSV, and JPG extracts from M-Pesa.</span>
                 </label>
               </div>
-              <button onClick={() => setStep(3)} disabled={!file} className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition">
-                Run AI Analysis
+              <button onClick={() => setStep(3)} disabled={!file} className="w-full bg-[#059669] hover:bg-[#047857] disabled:opacity-50 disabled:bg-[#163327] disabled:text-white/30 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-[#059669]/20 flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Run AI Underwriting Agent
               </button>
             </div>
           )}
 
-          {/* STEP 3: AI Processing */}
-          {step === 3 && (
-            <div className="space-y-4 font-mono text-sm">
-              <div className="flex items-center justify-center mb-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          {/* STEP 4: Success State */}
+          {step === 4 && (
+            <div className="space-y-8 animate-in slide-in-from-bottom-8 duration-700">
+              <div className="bg-[#0e1f18] p-8 rounded-3xl border border-[#10b981] shadow-2xl shadow-[#10b981]/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#10b981] opacity-10 blur-3xl rounded-full"></div>
+                
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h3 className="text-2xl font-editorial font-bold text-white mb-1">Loan Authorized</h3>
+                    <p className="text-sm text-[#34d399]">Live on Global Marketplace</p>
+                  </div>
+                  <div className="w-16 h-16 bg-[#064e3b] border border-[#10b981] rounded-full flex items-center justify-center shadow-inner">
+                    <svg className="w-8 h-8 text-[#34d399]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-[#06120e] p-4 rounded-xl border border-[#163327]">
+                    <span className="text-[10px] uppercase font-bold text-[#a7f3d0]/60 tracking-wider">Approved Capital</span>
+                    <p className="text-2xl font-mono text-white mt-1">${amount}</p>
+                  </div>
+                  <div className="bg-[#06120e] p-4 rounded-xl border border-[#163327]">
+                    <span className="text-[10px] uppercase font-bold text-[#a7f3d0]/60 tracking-wider">Interest Rate</span>
+                    <p className="text-2xl font-mono text-white mt-1">15.0%</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-[#163327] pt-6">
+                  <span className="text-sm font-bold text-white">LenderX Risk Score</span>
+                  <div className="flex items-center gap-3">
+                    <div className="text-3xl font-editorial font-bold text-[#34d399]">{score}</div>
+                    <div className="text-xs text-[#a7f3d0]/60">/ 100 <br/>(Tier 1)</div>
+                  </div>
+                </div>
               </div>
-              <div className="bg-slate-950 rounded-lg p-4 h-48 overflow-y-auto border border-slate-800">
-                {aiLogs.map((log, idx) => (
-                  <div key={idx} className="text-emerald-400 mb-2">
-                    <span className="text-slate-600 mr-2">[{new Date().toISOString().split('T')[1].substring(0, 8)}]</span>
+              <button onClick={() => navigate('/borrower')} className="w-full bg-[#163327] hover:bg-[#1a3d2e] border border-[#10b981]/30 text-white font-bold py-4 rounded-xl transition">
+                Return to Borrower Dashboard
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Right Panel: Technical AWS Trace Terminal */}
+      <div className="hidden lg:flex w-1/2 bg-[#06120e] flex-col p-8 border-l border-[#142921] relative">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2000')] opacity-5 bg-cover mix-blend-overlay"></div>
+        
+        <div className="relative z-10 flex items-center justify-between mb-8 pb-4 border-b border-[#163327]">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 rounded-full bg-[#10b981] animate-pulse"></div>
+            <span className="font-mono text-xs text-[#34d399] uppercase tracking-widest">AWS Step Functions Trace</span>
+          </div>
+          <span className="font-mono text-[10px] text-white/40">US-EAST-1 / AP-SOUTH-1</span>
+        </div>
+
+        <div className="relative z-10 flex-1 bg-[#091712]/80 backdrop-blur-md rounded-2xl border border-[#163327] p-6 font-mono text-xs md:text-sm overflow-y-auto shadow-2xl">
+          {step < 3 && (
+            <div className="text-[#a7f3d0]/30 h-full flex items-center justify-center">
+              Awaiting payload to initialize AWS architecture...
+            </div>
+          )}
+          
+          {(step === 3 || step === 4) && (
+            <div className="space-y-4">
+              {step === 3 && (
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-5 h-5 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-[#34d399] font-bold animate-pulse">Executing Distributed Agent Workflow...</span>
+                </div>
+              )}
+              
+              {aiLogs.map((log, idx) => {
+                const isError = log.includes("[ERROR]");
+                const isSuccess = log.includes("[SUCCESS]") || log.includes("DynamoDB");
+                const isAws = log.includes("[AWS") || log.includes("[S3]");
+                const isOpenAi = log.includes("[OpenAI");
+                
+                return (
+                  <div key={idx} className={`animate-in slide-in-from-left-4 fade-in leading-relaxed ${isError ? 'text-red-400' : isSuccess ? 'text-[#10b981] font-bold' : isAws ? 'text-blue-300' : isOpenAi ? 'text-purple-300' : 'text-[#a7f3d0]'}`}>
+                    <span className="text-white/30 mr-3">[{new Date().toISOString().split('T')[1].substring(0, 11)}]</span>
                     {log}
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Success */}
-          {step === 4 && (
-            <div className="text-center space-y-6 animate-in zoom-in-95">
-              <div className="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/50">
-                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
-              </div>
-              <h3 className="text-3xl font-bold text-white">Loan Approved</h3>
-              <div className="bg-slate-900 p-4 rounded-xl border border-emerald-900 inline-block text-left">
-                <p className="text-slate-400">Amount: <span className="text-white font-bold">${amount}</span></p>
-                <p className="text-slate-400">Risk Score: <span className="text-emerald-400 font-bold">92/100</span></p>
-                <p className="text-slate-400">Status: <span className="text-white font-bold">Listed on Marketplace</span></p>
-              </div>
-              <button onClick={() => navigate('/borrower')} className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition mt-4">
-                Return to Dashboard
-              </button>
+                );
+              })}
             </div>
           )}
         </div>

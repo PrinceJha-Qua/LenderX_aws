@@ -1,4 +1,8 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import {
+  APIGatewayProxyCognitoAuthorizer,
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+} from 'aws-lambda';
 import { CreateLoanService } from '../../application/loans/CreateLoanService';
 import { CreateLoanSchema } from '../../shared/schemas';
 import { ApiHelper } from '../../shared/ApiHelper';
@@ -14,10 +18,12 @@ export const makeCreateLoanHandler =
       const req = CreateLoanSchema.parse(body);
 
       // 3. Extract Auth Context
-      // (Hackathon shortcut: extracting from headers directly instead of JWT authorizer)
-      const borrowerId = event.headers['x-borrower-id'];
+      const claims = (event.requestContext.authorizer as
+        | APIGatewayProxyCognitoAuthorizer
+        | undefined)?.claims;
+      const borrowerId = claims?.sub;
       if (!borrowerId) {
-        return ApiHelper.handleError(new Error('Missing x-borrower-id header'));
+        return ApiHelper.success(401, { error: 'Unauthorized' });
       }
 
       // 4. Execute Business Logic

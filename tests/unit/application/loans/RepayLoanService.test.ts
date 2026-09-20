@@ -77,4 +77,23 @@ describe('RepayLoanService', () => {
       expect.objectContaining({ eventType: 'LOAN_COMPLETED' }),
     );
   });
+
+  it('rejects repayment of another borrower\'s loan', async () => {
+    const loan = Loan.create({
+      loanId: 'L-1',
+      borrowerId: 'B-1',
+      amount: Money.fromDollars(100),
+      termDays: 30,
+      interestRate: 0.15,
+    });
+    mockLoanRepo.getById.mockResolvedValue(loan);
+
+    await expect(
+      service.execute(
+        { loanId: 'L-1', amount: Money.fromDollars(50), idempotencyKey: generateId() },
+        'B-2',
+      ),
+    ).rejects.toMatchObject({ statusCode: 403, code: 'UNAUTHORIZED' });
+    expect(mockLoanRepo.repayLoanTx).not.toHaveBeenCalled();
+  });
 });

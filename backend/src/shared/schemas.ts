@@ -13,7 +13,6 @@ export type CreateLoanRequest = z.infer<typeof CreateLoanSchema>;
 
 export const FundLoanSchema = z.object({
   loanId: z.string().min(1),
-  lenderId: z.string().min(1), // In reality, extracted from JWT
   idempotencyKey: z.string().uuid(),
 });
 export type FundLoanRequest = z.infer<typeof FundLoanSchema>;

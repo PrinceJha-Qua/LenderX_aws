@@ -15,11 +15,19 @@ describe('createLoan Handler', () => {
     handler = makeCreateLoanHandler(service);
   });
 
-  const createEvent = (body: any, headers: Record<string, string> = { 'x-borrower-id': 'B-1' }): APIGatewayProxyEvent => ({
+  const createEvent = (body: any, groupsClaim: unknown = 'BORROWER'): APIGatewayProxyEvent => ({
     body: JSON.stringify(body),
-    headers,
+    headers: {},
     httpMethod: 'POST',
     path: '/loans',
+    requestContext: {
+      authorizer: {
+        claims: {
+          sub: 'B-1',
+          'cognito:groups': groupsClaim,
+        },
+      },
+    },
   } as any);
 
   it('returns 201 on success', async () => {
@@ -79,5 +87,24 @@ describe('createLoan Handler', () => {
     expect(result.statusCode).toBe(409);
     const body = JSON.parse(result.body);
     expect(body.error).toBe('MAX_ACTIVE_LOANS_EXCEEDED');
+  });
+
+  it('returns 401 when the authenticated identity is missing', async () => {
+    const result = await handler({
+      ...createEvent({ amount: 4000, termDays: 30, purpose: 'Inventory purchase' }),
+      requestContext: {},
+    } as APIGatewayProxyEvent);
+
+    expect(result.statusCode).toBe(401);
+    expect(JSON.parse(result.body)).toEqual({ error: 'Unauthorized' });
+  });
+
+  it('returns 403 when the user is not a borrower', async () => {
+    const result = await handler(
+      createEvent({ amount: 4000, termDays: 30, purpose: 'Inventory purchase' }, 'LENDER'),
+    );
+
+    expect(result.statusCode).toBe(403);
+    expect(JSON.parse(result.body)).toEqual({ error: 'Forbidden' });
   });
 });

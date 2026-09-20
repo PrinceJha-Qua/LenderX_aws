@@ -6,6 +6,7 @@ import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 
 export class LenderXStack extends cdk.Stack {
@@ -83,6 +84,62 @@ export class LenderXStack extends cdk.Stack {
       definitionBody: stepfunctions.DefinitionBody.fromChainable(definition),
       timeout: cdk.Duration.days(365),
     });
+    // Cognito User Pool
+    const userPool = new cognito.UserPool(this, 'LenderXUserPool', {
+      userPoolName: 'lenderx-users',
+
+      selfSignUpEnabled: true,
+
+      signInAliases: {
+        email: true,
+      },
+
+      autoVerify: {
+        email: true,
+      },
+
+      standardAttributes: {
+        email: {
+          required: true,
+          mutable: true,
+        },
+      },
+
+      passwordPolicy: {
+        minLength: 8,
+        requireLowercase: true,
+        requireUppercase: true,
+        requireDigits: true,
+        requireSymbols: false,
+      },
+
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    new cognito.CfnUserPoolGroup(this, 'BorrowerGroup', {
+      userPoolId: userPool.userPoolId,
+      groupName: 'BORROWER',
+      description: 'LenderX borrowers',
+    });
+
+    new cognito.CfnUserPoolGroup(this, 'LenderGroup', {
+      userPoolId: userPool.userPoolId,
+      groupName: 'LENDER',
+      description: 'LenderX lenders',
+    });
+
+    const userPoolClient = userPool.addClient('LenderXWebClient', {
+      userPoolClientName: 'lenderx-web',
+
+      authFlows: {
+        userSrp: true,
+        userPassword: true,
+      },
+
+      generateSecret: false,
+    });
 
     // 5. API Gateway Lambdas
     const lambdaProps: lambdaNodejs.NodejsFunctionProps = {
@@ -128,11 +185,26 @@ export class LenderXStack extends cdk.Stack {
         allowHeaders: ['Content-Type', 'x-borrower-id'],
       },
     });
+    const cognitoAuthorizer = new apigateway.CognitoUserPoolsAuthorizer(
+  this,
+  'LenderXCognitoAuthorizer',
+  {
+    cognitoUserPools: [userPool],
+    authorizerName: 'LenderXCognitoAuthorizer',
+  },
+);
 
     const loansResource = api.root.addResource('loans');
 
     // POST /loans -> Create Loan
-    loansResource.addMethod('POST', new apigateway.LambdaIntegration(createLoanLambda));
+    loansResource.addMethod(
+  'POST',
+  new apigateway.LambdaIntegration(createLoanLambda),
+  {
+    authorizationType: apigateway.AuthorizationType.COGNITO,
+    authorizer: cognitoAuthorizer,
+  },
+);
     // POST /loans/underwrite -> Mock Underwriting
 const underwriteResource = loansResource.addResource('underwrite');
 underwriteResource.addMethod(
@@ -142,16 +214,37 @@ underwriteResource.addMethod(
 
     // POST /loans/fund -> Fund Loan
     const fundResource = loansResource.addResource('fund');
-    fundResource.addMethod('POST', new apigateway.LambdaIntegration(fundLoanLambda));
+    fundResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(fundLoanLambda),
+      {
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        authorizer: cognitoAuthorizer,
+      },
+    );
 
     // POST /loans/repay -> Repay Loan
     const repayResource = loansResource.addResource('repay');
-    repayResource.addMethod('POST', new apigateway.LambdaIntegration(repayLoanLambda));
+    repayResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(repayLoanLambda),
+      {
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        authorizer: cognitoAuthorizer,
+      },
+    );
 
     // CDK Outputs
     new cdk.CfnOutput(this, 'TableName', { value: this.singleTable.tableName });
     new cdk.CfnOutput(this, 'DocumentBucketName', { value: this.documentBucket.bucketName });
     new cdk.CfnOutput(this, 'StateMachineArn', { value: lifecycleStateMachine.stateMachineArn });
     new cdk.CfnOutput(this, 'ApiEndpoint', { value: api.url });
+    new cdk.CfnOutput(this, 'CognitoUserPoolId', {
+  value: userPool.userPoolId,
+  });
+
+  new cdk.CfnOutput(this, 'CognitoClientId', {
+  value: userPoolClient.userPoolClientId,
+  });
   }
 }

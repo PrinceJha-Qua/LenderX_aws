@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { CreateLoanService } from '../../application/loans/CreateLoanService';
 import { CreateLoanSchema } from '../../shared/schemas';
 import { ApiHelper } from '../../shared/ApiHelper';
+import { getAuthenticatedUser, requireGroup } from '../../shared/auth';
 
 export const makeCreateLoanHandler =
   (service: CreateLoanService) =>
@@ -14,14 +15,16 @@ export const makeCreateLoanHandler =
       const req = CreateLoanSchema.parse(body);
 
       // 3. Extract Auth Context
-      // (Hackathon shortcut: extracting from headers directly instead of JWT authorizer)
-      const borrowerId = event.headers['x-borrower-id'];
-      if (!borrowerId) {
-        return ApiHelper.handleError(new Error('Missing x-borrower-id header'));
+      const user = getAuthenticatedUser(event);
+      if (!user) {
+        return ApiHelper.success(401, { error: 'Unauthorized' });
+      }
+      if (!requireGroup(user, 'BORROWER')) {
+        return ApiHelper.success(403, { error: 'Forbidden' });
       }
 
       // 4. Execute Business Logic
-      const loan = await service.execute(req, borrowerId);
+      const loan = await service.execute(req, user.userId);
 
       // 5. Return success
       return ApiHelper.success(201, loan.snapshot());

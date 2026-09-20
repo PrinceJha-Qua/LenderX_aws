@@ -54,7 +54,7 @@ export class LenderXStack extends cdk.Stack {
 
     // 3. Lifecycle Lambda (Checks for Default)
     const checkDefaultLambda = new lambda.Function(this, 'CheckDefaultLambda', {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'index.handler', // We will bundle this later
       code: lambda.Code.fromInline(`
         exports.handler = async (event) => { 
@@ -86,7 +86,7 @@ export class LenderXStack extends cdk.Stack {
 
     // 5. API Gateway Lambdas
     const lambdaProps: lambdaNodejs.NodejsFunctionProps = {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       entry: '../backend/src/handlers/index.ts',
       environment: { TABLE_NAME: this.singleTable.tableName },
       bundling: { minify: true, sourceMap: true },
@@ -96,6 +96,14 @@ export class LenderXStack extends cdk.Stack {
       ...lambdaProps,
       handler: 'createLoan',
     });
+    const underwriteLoanLambda = new lambdaNodejs.NodejsFunction(
+  this,
+  'UnderwriteLoanLambda',
+  {
+    ...lambdaProps,
+    handler: 'underwriteLoan',
+  },
+  );
     const fundLoanLambda = new lambdaNodejs.NodejsFunction(this, 'FundLoanLambda', {
       ...lambdaProps,
       handler: 'fundLoan',
@@ -109,6 +117,7 @@ export class LenderXStack extends cdk.Stack {
     this.singleTable.grantReadWriteData(createLoanLambda);
     this.singleTable.grantReadWriteData(fundLoanLambda);
     this.singleTable.grantReadWriteData(repayLoanLambda);
+    this.singleTable.grantReadWriteData(underwriteLoanLambda);
 
     // 6. API Gateway Configuration
     const api = new apigateway.RestApi(this, 'LenderXApi', {
@@ -124,6 +133,12 @@ export class LenderXStack extends cdk.Stack {
 
     // POST /loans -> Create Loan
     loansResource.addMethod('POST', new apigateway.LambdaIntegration(createLoanLambda));
+    // POST /loans/underwrite -> Mock Underwriting
+const underwriteResource = loansResource.addResource('underwrite');
+underwriteResource.addMethod(
+  'POST',
+  new apigateway.LambdaIntegration(underwriteLoanLambda),
+);
 
     // POST /loans/fund -> Fund Loan
     const fundResource = loansResource.addResource('fund');

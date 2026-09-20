@@ -21,6 +21,10 @@ export class FundLoanService {
     // Loan entity defends its own state machine (must be APPROVED, can't be own loan)
     loan.fund(lender.id);
 
+    // FUNDED -> DISBURSED
+    // For LenderX MVP, funding means immediate disbursement.
+    loan.disburse();
+
     // Cross-aggregate rule: Lender must have enough money
     if (lender.balance < loan.amount) {
       throw new InsufficientFundsError(

@@ -54,4 +54,27 @@ export class UnderwriteLoanService {
     // 7. Persist final decision
     await this.loanRepo.save(loan);
   }
+  async executeMock(loanId: string): Promise<void> {
+  const loan = await this.loanRepo.getById(loanId);
+
+  if (!loan) {
+    throw new DomainError('Loan not found', 'NOT_FOUND', 404);
+  }
+
+  // REQUESTED -> UNDERWRITING
+  loan.startUnderwriting();
+  await this.loanRepo.save(loan);
+
+  // Mock borrower information
+  const borrowerLevel = await this.borrowerProvider.getLevel(loan.borrowerId);
+  const limit = getCreditLimit(borrowerLevel);
+
+  // Temporary deterministic score while Bedrock is unavailable
+  const mockRiskScore = 85;
+
+  // UNDERWRITING -> APPROVED
+  loan.approve(mockRiskScore, limit);
+
+  await this.loanRepo.save(loan);
+}
 }

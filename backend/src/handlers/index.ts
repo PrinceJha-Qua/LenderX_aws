@@ -1,10 +1,14 @@
+import { UnderwriteLoanService } from '../application/underwriting/UnderwriteLoanService';
+import { makeUnderwriteLoanHandler } from './loan/underwriteLoan';
+
+import { Money } from '../shared/Money';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-import { DynamoDbLoanRepository } from '../../infrastructure/dynamodb/DynamoDbLoanRepository';
-import { CreateLoanService } from '../../application/loans/CreateLoanService';
-import { FundLoanService } from '../../application/funding/FundLoanService';
-import { RepayLoanService } from '../../application/loans/RepayLoanService';
+import { DynamoDbLoanRepository } from '../infrastructure/dynamodb/DynamoDbLoanRepository';
+import { CreateLoanService } from '../application/loans/CreateLoanService';
+import { FundLoanService } from '../application/funding/FundLoanService';
+import { RepayLoanService } from '../application/loans/RepayLoanService';
 
 import { makeCreateLoanHandler } from './loan/createLoan';
 import { makeFundLoanHandler } from './loan/fundLoan';
@@ -27,7 +31,10 @@ const mockBorrowerRepo = {
   getActiveLoanCount: async () => 0 
 };
 const mockLenderRepo = { 
-  getById: async (id: string) => ({ id, balance: 10000000 }) // Lender has $100,000 for demo
+  getById: async (id: string) => ({
+    id,
+    balance: Money.fromDollars(100000),
+  })
 };
 const mockAuditRepo = { 
   record: async (event: any) => console.log('[AUDIT RECORDED]', event) 
@@ -37,8 +44,15 @@ const mockAuditRepo = {
 const createLoanService = new CreateLoanService(loanRepo, mockBorrowerRepo);
 const fundLoanService = new FundLoanService(loanRepo, mockLenderRepo, mockAuditRepo);
 const repayLoanService = new RepayLoanService(loanRepo, mockAuditRepo);
+const underwriteLoanService = new UnderwriteLoanService(
+  loanRepo,
+  mockBorrowerRepo,
+  {} as any,
+  {} as any,
+);
 
 // 5. Export the Final Lambda Handlers
 export const createLoan = makeCreateLoanHandler(createLoanService);
 export const fundLoan = makeFundLoanHandler(fundLoanService);
 export const repayLoan = makeRepayLoanHandler(repayLoanService);
+export const underwriteLoan = makeUnderwriteLoanHandler(underwriteLoanService);

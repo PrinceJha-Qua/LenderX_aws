@@ -68,7 +68,7 @@ function GlobalNavbar() {
           <img src="/logo.png" alt="LenderX" className="h-8 w-auto object-contain" />
         </Link>
         {isBorrower && (
-          <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+          <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-[0.14em] bg-emerald-50 text-emerald-800 border border-emerald-200/80">
             Enterprise
           </span>
         )}
@@ -83,7 +83,7 @@ function GlobalNavbar() {
               <button
                 key={tab.id}
                 onClick={() => setSearchParams({ tab: tab.id })}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer tracking-[0.02em] ${
                   isActive
                     ? 'bg-white text-[#0c3b2e] shadow-xs ring-1 ring-slate-200/70 font-bold'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
@@ -96,7 +96,7 @@ function GlobalNavbar() {
           })}
         </div>
       ) : (
-        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600">
+        <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600 tracking-[0.02em]">
           <Link
             to="/"
             className={`transition hover:text-emerald-700 ${location.pathname === '/' ? 'text-emerald-700 font-bold' : ''}`}
@@ -122,14 +122,14 @@ function GlobalNavbar() {
       <div className="flex items-center gap-3 flex-shrink-0">
         {isBorrower ? (
           <>
-            <div className="hidden md:flex items-center gap-3 text-xs font-semibold text-slate-500 mr-1">
+            <div className="hidden md:flex items-center gap-3 text-xs font-semibold text-slate-500 mr-1 tracking-[0.02em]">
               <Link to="/" className="hover:text-emerald-700 transition">Home</Link>
               <span className="text-slate-300">/</span>
               <Link to="/lender" className="hover:text-emerald-700 transition">Lender</Link>
             </div>
             <Link
               to="/wizard"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs transition"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs transition tracking-[0.03em]"
             >
               Run AI Demo
             </Link>

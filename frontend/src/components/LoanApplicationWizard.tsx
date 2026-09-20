@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createLoan } from '../services/api';
+import { createLoan, underwriteLoan } from '../services/api';
 
 export default function LoanApplicationWizard() {
   const [step, setStep] = useState(1);
@@ -8,57 +8,73 @@ export default function LoanApplicationWizard() {
   const [purpose, setPurpose] = useState('Commercial Solar Microgrid');
   const [file, setFile] = useState<File | null>(null);
   const [aiLogs, setAiLogs] = useState<string[]>([]);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(85);
+  const [loanId, setLoanId] = useState<string | null>(null);
+  const [workflowError, setWorkflowError] = useState('');
+  const [retryNonce, setRetryNonce] = useState(0);
   const navigate = useNavigate();
 
-  // Simulated AI Underwriting process hitting the REAL backend
   useEffect(() => {
-    if (step === 3) {
-      const logs = [
-        "[AWS API Gateway] POST /loans incoming payload...",
-        "[AWS Lambda] Initializing Underwriting Agent...",
-        "[S3] Securely buffering encrypted financial documents...",
-        "[OpenAI API] Extracting cash-flow velocity from M-Pesa statements...",
-        "[OpenAI API] Analyzing 12-month historical default probabilities...",
-        "[AWS Step Functions] Transition -> State: Risk_Evaluation",
-        "Deterministic Risk Score Calculated: 94/100 (Tier 1)",
-        "[DynamoDB] Persisting Loan Record (PartitionKey: B-123)...",
-      ];
-      
-      let i = 0;
-      const interval = setInterval(() => {
-        if (i < logs.length) {
-          setAiLogs(prev => [...prev, logs[i]]);
-          i++;
-        }
-      }, 700);
+    if (step !== 3) return;
 
-      // Call the real API
-      createLoan("B-123", {
-        amountCents: Math.round(parseFloat(amount) * 100),
-        termDays: 60,
-        purpose: purpose
-      }).then(() => {
-        setAiLogs(prev => [...prev, "[SUCCESS] Smart Contract Escrow Initialized on-chain."]);
-        setTimeout(() => {
+    let cancelled = false;
+    const appendLog = (message: string) => {
+      if (!cancelled) setAiLogs(prev => [...prev, message]);
+    };
+
+    const runWorkflow = async () => {
+      try {
+        setWorkflowError('');
+        if (loanId) {
+          appendLog('Retrying deterministic underwriting for the existing loan...');
+          const decision = await underwriteLoan(loanId);
+          if (cancelled) return;
+          appendLog('Finalizing underwriting decision...');
+          appendLog(`[SUCCESS] ${decision.message}`);
+          setScore(85);
           setStep(4);
-          // Animate score
-          let currScore = 0;
-          const scoreInt = setInterval(() => {
-            currScore += 2;
-            setScore(currScore);
-            if (currScore >= 94) clearInterval(scoreInt);
-          }, 30);
-        }, 1500);
-      }).catch(err => {
-        setAiLogs(prev => [...prev, `[ERROR] AWS Architecture Trace: ${err.message}`]);
-      }).finally(() => {
-        clearInterval(interval);
-      });
+          return;
+        }
 
-      return () => clearInterval(interval);
-    }
-  }, [step]);
+        appendLog('Initializing secure underwriting session...');
+        appendLog('Authenticating borrower identity...');
+        appendLog('Submitting credit request to LenderX API...');
+        const createdLoan = await createLoan({
+          amountCents: Math.round(parseFloat(amount) * 100),
+          termDays: 60,
+          purpose,
+        });
+        if (cancelled) return;
+        if (!createdLoan.loanId) throw new Error('The API did not return a loan ID.');
+        setLoanId(createdLoan.loanId);
+        appendLog(`Creating loan record... (${createdLoan.loanId})`);
+        appendLog('Running deterministic underwriting pipeline...');
+        appendLog('Evaluating credit policy...');
+        const decision = await underwriteLoan(createdLoan.loanId);
+        if (cancelled) return;
+        appendLog('Calculating deterministic risk score...');
+        appendLog('Finalizing underwriting decision...');
+        appendLog(`[SUCCESS] ${decision.message}`);
+        setScore(85);
+        setStep(4);
+      } catch (error) {
+        if (cancelled) return;
+        const message = error instanceof Error ? error.message : 'Underwriting could not be completed.';
+        setWorkflowError(message);
+        appendLog(`[ERROR] ${message}`);
+      }
+    };
+
+    void runWorkflow();
+    return () => { cancelled = true; };
+  }, [amount, purpose, retryNonce, step]);
+
+  const retryWorkflow = () => {
+    setWorkflowError('');
+    setAiLogs([]);
+    setStep(3);
+    setRetryNonce((value) => value + 1);
+  };
 
   return (
     <div className="min-h-screen bg-[#091712] text-white flex overflow-hidden font-sans">
@@ -115,6 +131,18 @@ export default function LoanApplicationWizard() {
               <button onClick={() => setStep(3)} disabled={!file} className="w-full bg-[#059669] hover:bg-[#047857] disabled:opacity-50 disabled:bg-[#163327] disabled:text-white/30 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-[#059669]/20 flex items-center justify-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 Run AI Underwriting Agent
+              </button>
+            </div>
+          )}
+
+          {step === 3 && workflowError && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4">
+              <div className="bg-[#0e1f18] p-8 rounded-3xl border border-red-400/50">
+                <h3 className="text-2xl font-editorial font-bold text-white mb-2">Underwriting paused</h3>
+                <p className="text-red-300 text-sm leading-relaxed">{workflowError}</p>
+              </div>
+              <button onClick={retryWorkflow} className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-4 rounded-xl transition">
+                Retry underwriting
               </button>
             </div>
           )}
@@ -183,10 +211,10 @@ export default function LoanApplicationWizard() {
           
           {(step === 3 || step === 4) && (
             <div className="space-y-4">
-              {step === 3 && (
+              {step === 3 && !workflowError && (
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-5 h-5 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-[#34d399] font-bold animate-pulse">Executing Distributed Agent Workflow...</span>
+                  <span className="text-[#34d399] font-bold animate-pulse">Running deterministic underwriting...</span>
                 </div>
               )}
               

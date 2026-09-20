@@ -15,7 +15,7 @@ export default function BorrowerDashboard() {
   const handleRepay = async () => {
     setIsRepaying(true);
     try {
-      await repayLoan('B-123', { loanId: 'LOAN-123', amountCents: activeBalance * 100 });
+      await repayLoan({ loanId: 'LOAN-123', amountCents: activeBalance * 100 });
       setActiveBalance(0);
       alert('Repayment successful! Your credit limit has been increased to $750.');
     } catch (e) {
@@ -32,7 +32,7 @@ export default function BorrowerDashboard() {
     try {
       const amountCents = Math.round(parseFloat(amount) * 100);
       if (isNaN(amountCents) || amountCents <= 0) throw new Error("Invalid amount");
-      await createLoan("B-123", { amountCents, termDays: 60, purpose: "Business Expansion" });
+      await createLoan({ amountCents, termDays: 60, purpose: "Business Expansion" });
       setSuccessMsg("Loan request submitted successfully!");
       setAmount('');
     } catch (err: any) {

@@ -5,6 +5,7 @@ import LenderDashboard from './components/LenderDashboard';
 import MainLandingPage from './components/MainLandingPage';
 import LoanApplicationWizard from './components/LoanApplicationWizard';
 import Manifesto from './components/Manifesto';
+import AuthGate from './components/AuthGate';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
       </nav>
 
       {/* Main Content Router */}
+      <AuthGate>
       <div className="w-full bg-slate-50 min-h-screen">
         <Routes>
           <Route path="/" element={<MainLandingPage />} />
@@ -44,6 +46,7 @@ export default function App() {
               <Route path="/manifesto" element={<Manifesto />} />
         </Routes>
       </div>
+      </AuthGate>
     </BrowserRouter>
   );
 }

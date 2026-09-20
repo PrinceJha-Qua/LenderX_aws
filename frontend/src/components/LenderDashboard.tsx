@@ -23,7 +23,7 @@ export default function LenderDashboard() {
   const handleFund = async (loanId: string) => {
     setLoadingLoanId(loanId);
     try {
-      await fundLoan('LEND-123', { loanId });
+      await fundLoan({ loanId });
       setToast('Successfully funded ' + loanId + '! Transaction verified on-chain.');
       setTimeout(() => setToast(''), 4000);
     } catch (err: any) {

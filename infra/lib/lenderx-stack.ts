@@ -181,8 +181,8 @@ export class LenderXStack extends cdk.Stack {
       restApiName: 'LenderX Service',
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS, // For hackathon
-        allowMethods: apigateway.Cors.ALL_METHODS,
-        allowHeaders: ['Content-Type', 'x-borrower-id'],
+        allowMethods: ['OPTIONS', 'POST'],
+        allowHeaders: ['Content-Type', 'Authorization'],
       },
     });
     const cognitoAuthorizer = new apigateway.CognitoUserPoolsAuthorizer(

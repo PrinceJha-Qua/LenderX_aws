@@ -128,7 +128,7 @@ export default function LenderDashboard() {
 <span className="px-2.5 py-1 rounded-full bg-[#10b981] text-[#091712] text-[10px] font-bold uppercase tracking-wider">Documentary Plate 01</span>
 <span className="text-xs text-[#d1fae5]/90 font-garamond italic">Season of Plenty • October Cycle • Global Sol Grid Active</span>
 </div>
-<h1 className="font-headline text-3xl sm:text-5xl text-white font-bold tracking-tight">Good evening, James.</h1>
+<h1 className="font-headline text-3xl sm:text-5xl text-white font-bold tracking-[0.035em]">Good evening, James.</h1>
 <p className="font-garamond italic text-lg text-[#ecfdf5]/90 mt-1">Your investments are flowering worldwide across 12 regenerative co-ops.</p>
 </div>
 <div className="flex items-center gap-3">
@@ -425,74 +425,74 @@ export default function LenderDashboard() {
 {/*  Card 1: Seed Capital Deployed  */}
 <div className="bg-[#ffffff] rounded-2xl p-4 border border-[#d1e7dd] shadow-sm hover:border-[#059669] transition">
 <div className="flex items-start justify-between">
-<span className="text-[11px] font-semibold text-[#527265] uppercase tracking-wider">Seed Capital Deployed</span>
+<span className="text-[11px] font-bold text-[#527265] uppercase tracking-[0.12em]">Seed Capital Deployed</span>
 <span className="w-7 h-7 rounded-full bg-[#ecfdf5] text-[#059669] flex items-center justify-center text-xs font-bold">🏺</span>
 </div>
 <div className="mt-2">
-<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-tight">$5,800.00</span>
-<div className="mt-1 flex items-center gap-1.5 text-xs text-[#059669] font-medium">
+<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-[0.035em]">$5,800.00</span>
+<div className="mt-1 flex items-center gap-1.5 text-xs text-[#059669] font-medium tracking-[0.015em]">
 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18" strokeWidth="2"></path></svg>
 <span>+$650 expanded this quarter</span>
 </div>
 </div>
-<div className="mt-2 pt-2 border-t border-[#e8f3ee] text-[11px] text-[#527265]">
+<div className="mt-2 pt-2 border-t border-[#e8f3ee] text-[11px] text-[#527265] tracking-[0.01em]">
                 Circulating through 5 micro-regions
               </div>
 </div>
 {/*  Card 2: Ready to Plant  */}
 <div className="bg-[#ffffff] rounded-2xl p-4 border border-[#d1e7dd] shadow-sm hover:border-[#10b981] transition">
 <div className="flex items-start justify-between">
-<span className="text-[11px] font-semibold text-[#527265] uppercase tracking-wider">Ready to Plant</span>
+<span className="text-[11px] font-bold text-[#527265] uppercase tracking-[0.12em]">Ready to Plant</span>
 <span className="w-7 h-7 rounded-full bg-[#f0fdf4] text-[#10b981] flex items-center justify-center text-xs font-bold">🌾</span>
 </div>
 <div className="mt-2">
-<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-tight">$2,450.00</span>
-<div className="mt-1 text-xs text-[#527265]">
+<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-[0.035em]">$2,450.00</span>
+<div className="mt-1 text-xs text-[#527265] tracking-[0.015em]">
 <span>Available immediate liquidity</span>
 </div>
 </div>
 <div className="mt-2 pt-2 border-t border-[#e8f3ee] flex items-center justify-between text-[11px]">
-<span className="text-[#527265]">Earning 4.2% in green treasury</span>
-<button onClick={() => setActiveTab("Global Projects")} className="text-[#059669] font-semibold hover:underline">Deploy →</button>
+<span className="text-[#527265] tracking-[0.01em]">Earning 4.2% in green treasury</span>
+<button onClick={() => setActiveTab("Global Projects")} className="text-[#059669] font-semibold hover:underline tracking-[0.02em]">Deploy →</button>
 </div>
 </div>
 {/*  Card 3: Active Cooperatives  */}
 <div className="bg-[#ffffff] rounded-2xl p-4 border border-[#d1e7dd] shadow-sm hover:border-[#047857] transition">
 <div className="flex items-start justify-between">
-<span className="text-[11px] font-semibold text-[#527265] uppercase tracking-wider">Active Cooperatives</span>
+<span className="text-[11px] font-bold text-[#527265] uppercase tracking-[0.12em]">Active Cooperatives</span>
 <span className="w-7 h-7 rounded-full bg-[#ecfdf5] text-[#047857] flex items-center justify-center text-xs font-bold">👥</span>
 </div>
 <div className="mt-2">
 <div className="flex items-baseline gap-2">
-<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-tight">12</span>
-<span className="text-xs font-medium text-[#047857]">Communities</span>
+<span className="font-headline text-2xl font-bold text-[#0f241c] tracking-[0.035em]">12</span>
+<span className="text-xs font-medium text-[#047857] tracking-[0.02em]">Communities</span>
 </div>
-<div className="mt-1 text-xs text-[#527265]">
+<div className="mt-1 text-xs text-[#527265] tracking-[0.015em]">
 <span>3 women-led artisan collectives</span>
 </div>
 </div>
-<div className="mt-2 pt-2 border-t border-[#e8f3ee] text-[11px] text-[#527265]">
+<div className="mt-2 pt-2 border-t border-[#e8f3ee] text-[11px] text-[#527265] tracking-[0.01em]">
                 48 direct household beneficiaries
               </div>
 </div>
 {/*  Card 4: Annualized Harvest Yield  */}
 <div className="bg-[#064e3b] text-[#ecfdf5] rounded-2xl p-4 border border-[#047857] shadow-md">
 <div className="flex items-start justify-between">
-<span className="text-[11px] font-semibold text-[#a7f3d0] uppercase tracking-wider">Harvest Yield (APY)</span>
+<span className="text-[11px] font-bold text-[#a7f3d0] uppercase tracking-[0.12em]">Harvest Yield (APY)</span>
 <span className="w-7 h-7 rounded-full bg-[#0e3b2e] text-[#34d399] flex items-center justify-center text-xs font-bold">☀</span>
 </div>
 <div className="mt-2">
 <div className="flex items-baseline gap-1">
-<span className="font-headline text-2xl font-bold text-white tracking-tight">16.4%</span>
-<span className="text-xs text-[#34d399] font-semibold">Net Annual</span>
+<span className="font-headline text-2xl font-bold text-white tracking-[0.035em]">16.4%</span>
+<span className="text-xs text-[#34d399] font-semibold tracking-[0.02em]">Net Annual</span>
 </div>
-<div className="mt-1 text-xs text-[#a7f3d0]/90">
+<div className="mt-1 text-xs text-[#a7f3d0]/90 tracking-[0.015em]">
 <span>+1.8% vs conventional microfinance</span>
 </div>
 </div>
-<div className="mt-2 pt-2 border-t border-[#0d694e] text-[11px] text-[#ecfdf5]/80 flex justify-between">
+<div className="mt-2 pt-2 border-t border-[#0d694e] text-[11px] text-[#ecfdf5]/80 flex justify-between tracking-[0.01em]">
 <span>Next harvest: Nov 01</span>
-<span className="font-bold text-[#34d399]">+$84.60</span>
+<span className="font-bold text-[#34d399] tracking-[0.02em]">+$84.60</span>
 </div>
 </div>
 </div>

@@ -1,11 +1,11 @@
 import { UnderwriteLoanService } from '../application/underwriting/UnderwriteLoanService';
 import { makeUnderwriteLoanHandler } from './loan/underwriteLoan';
 
-import { Money } from '../shared/Money';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 import { DynamoDbLoanRepository } from '../infrastructure/dynamodb/DynamoDbLoanRepository';
+import { DynamoDbLenderRepository } from '../infrastructure/dynamodb/DynamoDbLenderRepository';
 import { CreateLoanService } from '../application/loans/CreateLoanService';
 import { FundLoanService } from '../application/funding/FundLoanService';
 import { RepayLoanService } from '../application/loans/RepayLoanService';
@@ -30,19 +30,14 @@ const mockBorrowerRepo = {
   getLevel: async () => 1, 
   getActiveLoanCount: async () => 0 
 };
-const mockLenderRepo = { 
-  getById: async (id: string) => ({
-    id,
-    balance: Money.fromDollars(100000),
-  })
-};
+const lenderRepo = new DynamoDbLenderRepository(docClient, tableName);
 const mockAuditRepo = { 
   record: async (event: any) => console.log('[AUDIT RECORDED]', event) 
 };
 
 // 4. Initialize Application Services (Dependency Injection)
 const createLoanService = new CreateLoanService(loanRepo, mockBorrowerRepo);
-const fundLoanService = new FundLoanService(loanRepo, mockLenderRepo, mockAuditRepo);
+const fundLoanService = new FundLoanService(loanRepo, lenderRepo, mockAuditRepo);
 const repayLoanService = new RepayLoanService(loanRepo, mockAuditRepo);
 const underwriteLoanService = new UnderwriteLoanService(
   loanRepo,

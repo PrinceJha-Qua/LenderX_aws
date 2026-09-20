@@ -55,7 +55,7 @@ describe('FundLoanService', () => {
     mockLenderRepo.getById.mockResolvedValue(lender);
 
     const idempotencyKey = generateId();
-    await service.execute({ loanId: 'L-1', lenderId: 'LEND-1', idempotencyKey });
+    await service.execute({ loanId: 'L-1', idempotencyKey }, 'LEND-1');
 
     // Ensure the transaction was called
     expect(mockLoanRepo.fundLoanTx).toHaveBeenCalledWith(loan, 'LEND-1', idempotencyKey);
@@ -81,7 +81,7 @@ describe('FundLoanService', () => {
     mockLenderRepo.getById.mockResolvedValue(lender);
 
     await expect(
-      service.execute({ loanId: 'L-1', lenderId: 'LEND-1', idempotencyKey: generateId() }),
+      service.execute({ loanId: 'L-1', idempotencyKey: generateId() }, 'LEND-1'),
     ).rejects.toThrow(InsufficientFundsError);
   });
 
@@ -101,7 +101,7 @@ describe('FundLoanService', () => {
     mockLenderRepo.getById.mockResolvedValue(lender);
 
     await expect(
-      service.execute({ loanId: 'L-1', lenderId: 'LEND-1', idempotencyKey: generateId() }),
+      service.execute({ loanId: 'L-1', idempotencyKey: generateId() }, 'LEND-1'),
     ).rejects.toThrow(IllegalStateTransitionError);
   });
 });

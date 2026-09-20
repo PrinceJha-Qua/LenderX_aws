@@ -118,6 +118,18 @@ export class LenderXStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    new cognito.CfnUserPoolGroup(this, 'BorrowerGroup', {
+      userPoolId: userPool.userPoolId,
+      groupName: 'BORROWER',
+      description: 'LenderX borrowers',
+    });
+
+    new cognito.CfnUserPoolGroup(this, 'LenderGroup', {
+      userPoolId: userPool.userPoolId,
+      groupName: 'LENDER',
+      description: 'LenderX lenders',
+    });
+
     const userPoolClient = userPool.addClient('LenderXWebClient', {
       userPoolClientName: 'lenderx-web',
 
@@ -202,11 +214,25 @@ underwriteResource.addMethod(
 
     // POST /loans/fund -> Fund Loan
     const fundResource = loansResource.addResource('fund');
-    fundResource.addMethod('POST', new apigateway.LambdaIntegration(fundLoanLambda));
+    fundResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(fundLoanLambda),
+      {
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        authorizer: cognitoAuthorizer,
+      },
+    );
 
     // POST /loans/repay -> Repay Loan
     const repayResource = loansResource.addResource('repay');
-    repayResource.addMethod('POST', new apigateway.LambdaIntegration(repayLoanLambda));
+    repayResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(repayLoanLambda),
+      {
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        authorizer: cognitoAuthorizer,
+      },
+    );
 
     // CDK Outputs
     new cdk.CfnOutput(this, 'TableName', { value: this.singleTable.tableName });

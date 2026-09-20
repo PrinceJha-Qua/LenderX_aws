@@ -9,12 +9,12 @@ export class FundLoanService {
     private auditRepo: AuditRepository,
   ) {}
 
-  async execute(req: FundLoanRequest): Promise<void> {
+  async execute(req: FundLoanRequest, lenderId: string): Promise<void> {
     // 1. Fetch Aggregates
     const loan = await this.loanRepo.getById(req.loanId);
     if (!loan) throw new DomainError('Loan not found', 'NOT_FOUND', 404);
 
-    const lender = await this.lenderRepo.getById(req.lenderId);
+    const lender = await this.lenderRepo.getById(lenderId);
     if (!lender) throw new DomainError('Lender not found', 'NOT_FOUND', 404);
 
     // 2. Domain Business Rules Check

@@ -6,7 +6,7 @@
 
 # LenderX — Autonomous AI Micro-Credit & Regenerative Capital Platform
 
-**AWS AI Challenge · Serverless Micro-Credit Infrastructure & Real-Time Underwriting**
+**Serverless Micro-Credit Infrastructure & Real-Time Underwriting**
 
 <a href="https://skillicons.dev">
   <img src="https://skillicons.dev/icons?i=aws,ts,nodejs,react,vite,tailwind,dynamodb,docker,githubactions&perline=10" alt="Tech stack" />

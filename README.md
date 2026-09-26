@@ -437,9 +437,7 @@ cd frontend && npm run build
 
 ---
 
-## Credits & Hackathon Information
 
-- **Challenge:** AWS AI Challenge 2026
 - **Track:** Autonomous Micro-Credit & Regenerative Financial Infrastructure
 - **Core Architecture:** AWS Serverless (Lambda, API Gateway, DynamoDB, Cognito, Step Functions) + Amazon Bedrock + AWS Textract
 - **Engineered with:** TypeScript, React 19, Tailwind CSS v4, AWS CDK v2
